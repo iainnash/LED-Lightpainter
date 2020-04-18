@@ -170,7 +170,7 @@ void setup() {
     start_ap();  
   }
 
-  if (!MDNS.begin("esp8266")) {             // Start the mDNS responder for esp8266.local
+  if (!MDNS.begin("ledbar")) {             // Start the mDNS responder for esp8266.local
     Serial.println("Error setting up MDNS responder!");
   }
   Serial.println("mDNS responder started");
@@ -443,6 +443,7 @@ void handleFileDelete()
 
 
 void handleFileUploadDialog(){
+    Serial.println("sending upload dialog");
     String page = FPSTR(HTML_HEAD_START);
     page.replace("{v}", "File Upload");
     page += FPSTR(HTML_STYLE);
@@ -455,7 +456,7 @@ void handleFileUploadDialog(){
     page += F("<input type=\"submit\" value=\"Upload\">");
     page += F("</form>");
     page += FPSTR(HTML_END);
-
+    server.send(200, "text/html", page);
    
 }
 
@@ -800,9 +801,9 @@ void drawBMP(char *filename) {
         uint16_t buffer_pos=0;
           for(i = 0; i < w; i++) {
             
-            pixels.setPixelColor(i, gamma8[sdbuffer[buffer_pos+2]], gamma8[sdbuffer[buffer_pos+1]], gamma8[sdbuffer[buffer_pos]]);
+            pixels.setPixelColor(w-i, gamma8[sdbuffer[buffer_pos+2]], gamma8[sdbuffer[buffer_pos+1]], gamma8[sdbuffer[buffer_pos]]);
             
-            buffer_pos +=3;
+            buffer_pos += 3;
           }
           
            pixels.show();
